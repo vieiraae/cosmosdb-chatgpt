@@ -27,6 +27,9 @@ param cosmosDbEnableFreeTier bool = true
 ])
 param appServiceSku string = 'F1'
 
+@description('Specifies the resource group for the Azure OpenAI resource.')
+param openAiResourceGroup string = ''
+
 @description('Specifies the name for the Azure OpenAI resource.')
 param openAiResourceName string = ''
 
@@ -133,6 +136,7 @@ resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
 }
 
 resource openAiAccount 'Microsoft.CognitiveServices/accounts@2022-12-01' existing = {
+  scope: resourceGroup(openAiResourceGroup)
   name: openAiResourceName
 }
 

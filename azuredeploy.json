@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "1197847626314253098"
+      "templateHash": "14242224685038476165"
     }
   },
   "parameters": {
@@ -46,6 +46,13 @@
       ],
       "metadata": {
         "description": "Specifies the SKU for the Azure App Service plan. Defaults to **F1**"
+      }
+    },
+    "openAiResourceGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Specifies the resource group for the Azure OpenAI resource."
       }
     },
     "openAiResourceName": {
@@ -210,8 +217,8 @@
         "COSMOSDB__KEY": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('cosmosDbSettings').name), '2022-08-15').primaryMasterKey]",
         "COSMOSDB__DATABASE": "[variables('cosmosDbSettings').database.name]",
         "COSMOSDB__CONTAINER": "[variables('cosmosDbSettings').container.name]",
-        "OPENAI__ENDPOINT": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('openAiResourceName')), '2022-12-01').endpoint]",
-        "OPENAI__KEY": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('openAiResourceName')), '2022-12-01').key1]",
+        "OPENAI__ENDPOINT": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('openAiResourceGroup')), 'Microsoft.CognitiveServices/accounts', parameters('openAiResourceName')), '2022-12-01').endpoint]",
+        "OPENAI__KEY": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('openAiResourceGroup')), 'Microsoft.CognitiveServices/accounts', parameters('openAiResourceName')), '2022-12-01').key1]",
         "OPENAI__DEPLOYMENT": "[parameters('openAiDeployment')]",
         "OPENAI__MAXCONVERSATIONTOKENS": "2000"
       },
