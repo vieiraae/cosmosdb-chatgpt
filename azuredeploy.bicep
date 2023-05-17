@@ -1,9 +1,11 @@
-@description('Location where all resources will be deployed. This value defaults to the **South Central US** region.')
+@description('Location where all resources will be deployed. This value defaults to the **West Europe** region.')
 @allowed([
   'South Central US'
   'East US'
+  'North Europe'  
+  'West Europe'
 ])
-param location string = 'South Central US'
+param location string = 'West Europe'
 
 @description('''
 Unique name for the chat application.  The name is required to be unique as it will be used as a prefix for the names of these resources:
@@ -25,30 +27,17 @@ param cosmosDbEnableFreeTier bool = true
 ])
 param appServiceSku string = 'F1'
 
-@description('Specifies the SKU for the Azure OpenAI resource. Defaults to **S0**')
-@allowed([
-  'S0'
-])
-param openAiSku string = 'S0'
+@description('Specifies the name for the Azure OpenAI resource.')
+param openAiResourceName string = ''
+
+@description('Specifies the deployment for the Azure OpenAI resource. Defaults to **chatmodel**.')
+param openAiDeployment string = 'chatmodel'
 
 @description('Git repository URL for the chat application. This defaults to the [`azure-samples/cosmosdb-chatgpt`](https://github.com/azure-samples/cosmosdb-chatgpt) repository.')
 param appGitRepository string = 'https://github.com/azure-samples/cosmosdb-chatgpt.git'
 
 @description('Git repository branch for the chat application. This defaults to the [**main** branch of the `azure-samples/cosmosdb-chatgpt`](https://github.com/azure-samples/cosmosdb-chatgpt/tree/main) repository.')
 param appGetRepositoryBranch string = 'main'
-
-var openAiSettings = {
-  name: '${name}-openai'
-  sku: openAiSku
-  maxConversationTokens: '2000'
-  model: {
-    name: 'gpt-35-turbo'
-    version: '0301'
-    deployment: {
-      name: 'chatmodel'
-    }
-  }
-}
 
 var cosmosDbSettings = {
   name: '${name}-cosmos-nosql'
@@ -143,32 +132,13 @@ resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
   }
 }
 
-resource openAiAccount 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
-  name: openAiSettings.name
-  location: location
-  sku: {
-    name: openAiSettings.sku
-  }
-  kind: 'OpenAI'
-  properties: {
-    customSubDomainName: openAiSettings.name
-    publicNetworkAccess: 'Enabled'
-  }
+resource openAiAccount 'Microsoft.CognitiveServices/accounts@2022-12-01' existing = {
+  name: openAiResourceName
 }
 
-resource openAiModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = {
+resource openAiModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' existing = {
   parent: openAiAccount
-  name: openAiSettings.model.deployment.name
-  properties: {
-    model: {
-      format: 'OpenAI'
-      name: openAiSettings.model.name
-      version: openAiSettings.model.version
-    }
-    scaleSettings: {
-      scaleType: 'Standard'
-    }
-  }
+  name: openAiDeployment
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
@@ -200,7 +170,7 @@ resource appServiceWebSettings 'Microsoft.Web/sites/config@2022-03-01' = {
     OPENAI__ENDPOINT: openAiAccount.properties.endpoint
     OPENAI__KEY: openAiAccount.listKeys().key1
     OPENAI__DEPLOYMENT: openAiModelDeployment.name
-    OPENAI__MAXCONVERSATIONTOKENS: openAiSettings.maxConversationTokens
+    OPENAI__MAXCONVERSATIONTOKENS: '2000'
   }
 }
 
