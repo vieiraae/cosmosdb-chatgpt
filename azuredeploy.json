@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "12474420249264077370"
+      "templateHash": "9530159006973193825"
     }
   },
   "parameters": {
@@ -64,9 +64,9 @@
     },
     "openAiDeployment": {
       "type": "string",
-      "defaultValue": "chatmodel",
+      "defaultValue": "gpt-35-turbo",
       "metadata": {
-        "description": "Specifies the deployment for the Azure OpenAI resource. Defaults to **chatmodel**."
+        "description": "Specifies the deployment for the Azure OpenAI resource. Defaults to **gpt-35-turbo**."
       }
     },
     "appGitRepository": {
