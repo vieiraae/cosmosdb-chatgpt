@@ -36,8 +36,8 @@ param openAiResourceName string = ''
 @description('Specifies the deployment for the Azure OpenAI resource. Defaults to **gpt-35-turbo**.')
 param openAiDeployment string = 'gpt-35-turbo'
 
-@description('Git repository URL for the chat application. This defaults to the [`azure-samples/cosmosdb-chatgpt`](https://github.com/azure-samples/cosmosdb-chatgpt) repository.')
-param appGitRepository string = 'https://github.com/azure-samples/cosmosdb-chatgpt.git'
+@description('Git repository URL for the chat application. This defaults to the [`vieiraae/cosmosdb-chatgpt`](https://github.com/vieiraae/cosmosdb-chatgpt) repository.')
+param appGitRepository string = 'https://github.com/vieiraae/cosmosdb-chatgpt.git'
 
 @description('Git repository branch for the chat application. This defaults to the [**main** branch of the `azure-samples/cosmosdb-chatgpt`](https://github.com/azure-samples/cosmosdb-chatgpt/tree/main) repository.')
 param appGetRepositoryBranch string = 'main'
